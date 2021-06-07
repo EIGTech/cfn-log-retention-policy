@@ -5,11 +5,29 @@ Transform:
 
 Description: CloudFormation resource to define CloudWatch Logs retention policies
 
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 256
+    Runtime: nodejs14.x
+    Tracing: Active
+    Layers:
+      - !Ref NodeLayer
+
 Resources:
+  NodeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${ServiceName}-${ENV}-NodeLayers
+      Description: Runtime dependencies for Lambdas
+      ContentUri: ../layers
+      CompatibleRuntimes:
+        - nodejs14.x
+      RetentionPolicy: Retain
+
   LogRetentionPolicyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: nodejs14.x
       Description: CloudFormation resource for CloudWatch Logs retention policies
       CodeUri: ../.rollup/resource.zip
       Handler: resource.handler
