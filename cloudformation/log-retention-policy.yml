@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: CloudFormation resource to define CloudWatch Logs retention policies
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 256
+    Runtime: nodejs14.x
+    Layers:
+      - !Ref NodeLayer
+
+Resources:
+  NodeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: LogRetentionPolicy-NodeLayers
+      Description: Runtime dependencies for Lambdas
+      ContentUri: ../layers
+      CompatibleRuntimes:
+        - nodejs14.x
+      RetentionPolicy: Retain
+
+  LogRetentionPolicyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: CloudFormation resource for CloudWatch Logs retention policies
+      CodeUri: ../.rollup/resource.zip
+      Handler: resource.handler
+      FunctionName: LogRetentionPolicy
+      Policies:
+        - Statement:
+            - Sid: ResumeQueue
+              Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:DeleteRetentionPolicy
+                - logs:DescribeLogGroups
+                - logs:PutRetentionPolicy
+              Resource: "*"
+
+  LogRetentionPolicy:
+    Type: Custom::LogRetentionPolicy
+    Properties:
+      ServiceToken: !GetAtt LogRetentionPolicyFunction.Arn
+      LogGroup: !Sub /aws/lambda/${LogRetentionPolicyFunction}
+      RetentionInDays: 7
+
+Outputs:
+  FunctionArn:
+    Value: !GetAtt LogRetentionPolicyFunction.Arn
+    Export:
+      Name: CFN-LogRetentionPolicy

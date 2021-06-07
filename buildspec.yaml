@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  variables:
+    S3_BUCKET: "deployments-cabrillo"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installing npm dependencies
+      - npm run co:login
+      - npm i
+      - find ./node_modules/* -mtime +10950 -exec touch {} \;
+      - npm i -g typescript
+  pre_build:
+    commands:
+      - echo Nothing to do in prebuild
+  build:
+    commands:
+      - make build-package
+  post_build:
+    commands:
+      - find .rollup -type f -name '*.js' -exec bash -c 'zip -j "${1%.js}".zip "$1"' _ {} \;
+      - 'aws cloudformation package --template "./cloudformation/template.yaml" --s3-bucket $S3_BUCKET --output-template ./post-template.yaml'
+
+artifacts:
+  files:
+    - post-template.yaml
+
+cache:
+  paths:
+    # Unsure if this is going to work out
+    # Monitor this:
+    #- node_modules/**/*

@@ -1,7 +1,7 @@
-import { CloudWatchLogsClient } from './client';
+import { LogsClient } from './client';
 import { CloudFormationEvent, CloudFormationResponse, LambdaContext } from '@fancyguy/cfn-response';
 
-const cloudwatchlogs = new CloudWatchLogsClient();
+const cloudwatchlogs = new LogsClient();
 
 export interface ResourceProperties {
   LogGroup: string;
@@ -49,7 +49,7 @@ export function handler(event: CloudFormationEvent<ResourceProperties>, context:
     } else {
       throw new Error('LogGroup not specified');
     }
-  } catch (err) {
+  } catch (err: any) {
     response.failed(err);
   }
 }

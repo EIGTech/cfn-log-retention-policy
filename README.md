@@ -1,17 +1,13 @@
 # CFN-LogRetentionPolicy
 
-This package creates a CloudFormation custom resource for CloudWatch Logs log retention policies.
-
-[![Launch Stack][launch-image]][launch-stack]
-
 ##### Topics
 
-* [Syntax](#syntax)
-* [Permissions](#permissions)
-* [Properties](#properties)
-* [Return Values](#return-values)
-* [Examples](#examples)
-* [More Info](#more-info)
+- [Syntax](#syntax)
+- [Permissions](#permissions)
+- [Properties](#properties)
+- [Return Values](#return-values)
+- [Examples](#examples)
+- [More Info](#more-info)
 
 ### Syntax
 
@@ -47,36 +43,37 @@ Properties:
 
 The resource handler searches existing log groups to ensure it exists before it can set a retention policy.
 
-*Resource access*: all CloudWatch Logs ARNs
+_Resource access_: all CloudWatch Logs ARNs
 
-*Lifecycle events*: `Create`, `Update`
+_Lifecycle events_: `Create`, `Update`
 
 ##### `logs:CreateLogGroup`
 
 > ###### Note
+>
 > This permission is only required if you are setting retention policies for log groups that do not already exist.
 
 The resource handler needs an existing log group to apply a retention policy. It creates one if it doesn't exist.
 
-*Resource access*: The ARN for the log group specified in the [LogGroup](#loggroup) property.
+_Resource access_: The ARN for the log group specified in the [LogGroup](#loggroup) property.
 
-*Lifecycle events*: `Create`, `Update` *Only if the group doesn't exist*
+_Lifecycle events_: `Create`, `Update` _Only if the group doesn't exist_
 
 ##### `logs:PutRetentionPolicy`
 
 This is the primary purpose of this resource. It is required for the resource to work.
 
-*Resource access*: The ARN for the log group specified in the [LogGroup](#loggroup) property.
+_Resource access_: The ARN for the log group specified in the [LogGroup](#loggroup) property.
 
-*Lifecycle events*: `Create`, `Update`
+_Lifecycle events_: `Create`, `Update`
 
 ##### `logs:DeleteRetentionPolicy`
 
 This permission is required when removing the resource.
 
-*Resource access*: The ARN for the log group specified in the [LogGroup](#loggroup) property.
+_Resource access_: The ARN for the log group specified in the [LogGroup](#loggroup) property.
 
-*Lifecycle events*: `Delete`
+_Lifecycle events_: `Delete`
 
 ### Properties
 
@@ -84,35 +81,36 @@ This permission is required when removing the resource.
 
 The service token is the ARN to the Lambda function for the custom resource. It is exported for convenience as the function name with an optional prefix configured in the template.
 
-*Required*: Yes
+_Required_: Yes
 
-*Type*: String
+_Type_: String
 
-*Update requires*: Updates are not supported.
+_Update requires_: Updates are not supported.
 
 ###### LogGroup
 
 The name of the log group. Creates a new log group if one does not already exist.
 
 > ##### Note
+>
 > Changing the name requires replacement and will not delete the old log group.
 > Use the [`AWS::Logs::LogGroup`](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html) instead if you are in need of managing log groups.
 
-*Required*: Yes
+_Required_: Yes
 
-*Type*: String
+_Type_: String
 
-*Update requires*: [Replacement][lifecycle:replacement]
+_Update requires_: [Replacement][lifecycle:replacement]
 
 ###### RetentionInDays
 
-The number of days log events are kept in CloudWatch Logs. When a log event expires, CloudWatch Logs automatically deletes it. For valid values, see [PutRetentionPolicy](http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutRetentionPolicy.html) in the *Amazon CloudWatch Logs API Reference*.
+The number of days log events are kept in CloudWatch Logs. When a log event expires, CloudWatch Logs automatically deletes it. For valid values, see [PutRetentionPolicy](http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutRetentionPolicy.html) in the _Amazon CloudWatch Logs API Reference_.
 
-*Required*: Yes
+_Required_: Yes
 
-*Type*: Integer
+_Type_: Integer
 
-*Update requires*: [No Interruption][lifecycle:no-interruption]
+_Update requires_: [No Interruption][lifecycle:no-interruption]
 
 ### Return Values
 
@@ -128,38 +126,37 @@ The following example sets a CloudWatch Logs retention policy for a lambda funct
 
 ```json
 {
-    "MyFunctionRetentionPolicy": {
-        "Type": "Custom::LogRetentionPolicy",
-        "Properties": {
-            "Version": "1.0",
-            "ServiceToken": {"Fn::ImportValue": "CFN-LogRetentionPolicy"},
-            "LogGroup": {"Fn::Sub": "/aws/lambda/${MyFunction}"},
-            "RetentionInDays": 7
-        }
+  "MyFunctionRetentionPolicy": {
+    "Type": "Custom::LogRetentionPolicy",
+    "Properties": {
+      "Version": "1.0",
+      "ServiceToken": { "Fn::ImportValue": "CFN-LogRetentionPolicy" },
+      "LogGroup": { "Fn::Sub": "/aws/lambda/${MyFunction}" },
+      "RetentionInDays": 7
     }
+  }
 }
 ```
 
 ```yaml
 MyFunctionRetentionPolicy:
-    Type: Custom::LogRetentionPolicy
-    Properties:
-        Version: '1.0'
-        ServiceToken: !ImportValue 'CFN-LogRetentionPolicy'
-        LogGroup: !Sub '/aws/lambda/${MyFunction}'
-        RetentionInDays: 7
+  Type: Custom::LogRetentionPolicy
+  Properties:
+    Version: "1.0"
+    ServiceToken: !ImportValue "CFN-LogRetentionPolicy"
+    LogGroup: !Sub "/aws/lambda/${MyFunction}"
+    RetentionInDays: 7
 ```
 
 ### More Info
 
-* For more about custom resources see the [AWS::CloudFormation::CustomResource](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cfn-customresource.html) documentation.
+- For more about custom resources see the [AWS::CloudFormation::CustomResource](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cfn-customresource.html) documentation.
 
-* See the [CloudWatch Logs API Reference](http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/Welcome.html) for more information on CloudWatch Logs.
+- See the [CloudWatch Logs API Reference](http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/Welcome.html) for more information on CloudWatch Logs.
 
-* In many cases the official [`AWS::Logs::LogGroup`](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html) may be sufficient.
+- In many cases the official [`AWS::Logs::LogGroup`](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html) may be sufficient.
 
 [launch-stack]: https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=CFN-LogRetentionPolicy&templateURL=https://s3.amazonaws.com/fancyguy-devops/cloudformation/templates/log-retention-policy.yml
 [launch-image]: https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png
-
 [lifecycle:replacement]: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement
 [lifecycle:no-interruption]: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt

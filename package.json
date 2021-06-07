@@ -4,17 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
+    "rollup": "./node_modules/.bin/rollup --config rollup.config.js ",
+    "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "@fancyguy/cfn-response": "^0.5.0"
-  },
   "devDependencies": {
-    "@types/node": "^7.0.15",
+    "@types/node": "^13.13.45",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "rollup": "^2.40.0",
+    "rollup-plugin-entry-glob": "^0.3.0-rc1",
     "aws-sdk": "^2.48.0",
     "ts-loader": "^2.0.3",
-    "typescript": "^2.3.2",
-    "webpack": "^2.4.1"
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.18.0",
+    "@fancyguy/cfn-response": "^0.5.0"
   }
 }
