@@ -9,11 +9,14 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/node": "^13.13.45",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.0",
+    "@types/node": "^13.13.45",
+    "aws-sdk": "^2.48.0",
     "rollup": "^2.40.0",
     "rollup-plugin-entry-glob": "^0.3.0-rc1",
-    "aws-sdk": "^2.48.0",
     "ts-loader": "^2.0.3",
     "typescript": "^4.2.3"
   },
