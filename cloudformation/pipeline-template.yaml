@@ -102,7 +102,7 @@ Resources:
                 ActionMode: CHANGE_SET_REPLACE
                 Capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 RoleArn: !GetAtt CFNRole.Arn
-                StackName: FN-LogRetentionPolicy
+                StackName: CFN-LogRetentionPolicy
                 ChangeSetName: pipeline-changeset
                 TemplatePath: BuildArtifact::post-template.yaml
 
@@ -116,7 +116,7 @@ Resources:
               Configuration:
                 ActionMode: CHANGE_SET_EXECUTE
                 RoleArn: !GetAtt CFNRole.Arn
-                StackName: FN-LogRetentionPolicy
+                StackName: CFN-LogRetentionPolicy
                 ChangeSetName: pipeline-changeset
 
   PipelineRole:
