@@ -1,8 +1,5 @@
 import { lstatSync, readdirSync } from "fs";
 import path from "path";
-import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import json from "@rollup/plugin-json";
 
 const recursiveReaddirSync = (filePath) => {
   var list = [],
@@ -27,24 +24,6 @@ const getDefinition = (name) => ({
     file: name.replace("dist", ".rollup"),
     format: "cjs",
   },
-  plugins: [
-    json(),
-    commonjs({
-      // non-CommonJS modules will be ignored, but you can also
-      // specifically include/exclude files
-      include: ["./dist/resource.js", "node_modules/**"], // Default: undefined
-
-      // if true then uses of `global` won't be dealt with by this plugin
-      ignoreGlobal: false, // Default: false
-
-      // if false then skip sourceMap generation for CommonJS modules
-      sourceMap: false, // Default: true
-    }),
-    nodeResolve({
-      jsnext: true,
-      main: false,
-    }),
-  ],
 });
 
 const entries = (source) =>

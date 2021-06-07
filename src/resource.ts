@@ -1,18 +1,11 @@
 import { LogsClient } from './client';
-import { CloudFormationEvent, CloudFormationResponse, LambdaContext } from '@fancyguy/cfn-response';
+import response from 'cfn-response'
+import { CloudFormationCustomResourceEvent, Context } from 'aws-lambda';
 
 const cloudwatchlogs = new LogsClient();
 
-export interface ResourceProperties {
-  LogGroup: string;
-  RetentionInDays: number | string;
-}
-
-export function handler(event: CloudFormationEvent<ResourceProperties>, context: LambdaContext) {
+export const handler = (event: CloudFormationCustomResourceEvent, context: Context) => {
   console.log('Received event:\n', JSON.stringify(event, null, 2));
-  const response = new CloudFormationResponse(event, context);
-
-  response.timeout = 60000;
 
   const logGroup: string = event.ResourceProperties.LogGroup;
   const retentionInDays: number = parseInt(event.ResourceProperties.RetentionInDays.toString(), 10);
@@ -20,7 +13,6 @@ export function handler(event: CloudFormationEvent<ResourceProperties>, context:
   try {
     if (logGroup) {
       let request: Promise<any>;
-      response.PhysicalResourceId = logGroup;
 
       switch (event.RequestType) {
         case 'Create':
@@ -38,18 +30,18 @@ export function handler(event: CloudFormationEvent<ResourceProperties>, context:
           request = cloudwatchlogs.deleteRetentionPolicy(logGroup);
           break;
         default:
-          throw new Error('The request type "' + event.RequestType + '" is not supported.');
+          throw new Error('The unknown request type is not supported.');
       }
 
       request.then(() => {
-        response.success({});
+        response.send(event, context, response.SUCCESS, {}, logGroup)
       }).catch((err) => {
-        response.failed(err);
+        response.send(event, context, response.FAILED, {}, logGroup)
       });
     } else {
       throw new Error('LogGroup not specified');
     }
   } catch (err: any) {
-    response.failed(err);
+    response.send(event, context, response.FAILED, {}, logGroup)
   }
 }
