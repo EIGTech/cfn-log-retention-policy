@@ -10,7 +10,7 @@ phases:
       nodejs: 12
     commands:
       - echo Installing npm dependencies
-      - npm run co:login
+      # - npm run co:login
       - npm i
       - find ./node_modules/* -mtime +10950 -exec touch {} \;
       - npm i -g typescript
