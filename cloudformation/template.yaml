@@ -48,7 +48,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt LogRetentionPolicyFunction.Arn
       LogGroup: !Sub /aws/lambda/${LogRetentionPolicyFunction}
-      RetentionInDays: 7
+      RetentionInDays: 5
 
 Outputs:
   FunctionArn:
