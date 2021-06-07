@@ -18,7 +18,7 @@ Resources:
   NodeLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: !Sub ${ServiceName}-${ENV}-NodeLayers
+      LayerName: LogRetentionPolicy-NodeLayers
       Description: Runtime dependencies for Lambdas
       ContentUri: ../layers
       CompatibleRuntimes:
