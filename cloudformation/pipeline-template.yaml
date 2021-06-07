@@ -27,7 +27,7 @@ Parameters:
   Repo:
     Description: Github repo for project
     Type: String
-    Default: "EIGTech/mapping-platform-notifications-v2"
+    Default: "EIGTech/cfn-log-retention-policy"
 
   Branch:
     Description: Github branch name to use
